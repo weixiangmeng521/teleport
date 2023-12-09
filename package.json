@@ -1,0 +1,32 @@
+{
+  "name": "@weixiangmeng521/teleport",
+  "version": "1.0.0",
+  "description": "A library for passing data across components or business layers",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "rm -rf lib && mkdir lib && tsc",
+    "publish": "npm publish --access public",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "author": "weixiangmeng521",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "jest": "^29.7.0",
+    "prettier": "^3.1.0",
+    "ts-jest": "^29.1.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "lib/**/*"
+  ]
+}
