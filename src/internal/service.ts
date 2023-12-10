@@ -36,4 +36,23 @@ export class Teleport {
     public receive<T>(name: string | symbol, handler: (data: T) => void): void {
         this._teleportSingleton.receive<T>(name, handler);
     }
+
+
+
+    public removeHandle(name: string|symbol): void {
+        this._teleportSingleton.removeHandle(name);
+    }
+
+
+    public removeAllHandlers(){
+        this._teleportSingleton.removeAllHandlers();
+    }
+
+
+    public clear(){
+        this._teleportSingleton.clear();
+    }
+
+
+
 }
