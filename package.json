@@ -1,6 +1,6 @@
 {
-  "name": "@weixiangmeng521/teleport",
-  "version": "1.0.3",
+  "name": "@mwx521/teleport",
+  "version": "1.0.0",
   "description": "A library for passing data across components or business layers",
   "main": "./src/index.js",
   "keywords": [
