@@ -1,3 +1,18 @@
+package-lock.json
+
 .DS_Store
 lib
 node_modules
+
+
+.DS_Store
+
+# Log files
+logs
+*.log
+
+
+# Editor directories and files
+.idea
+.vs/
+.vscode/
