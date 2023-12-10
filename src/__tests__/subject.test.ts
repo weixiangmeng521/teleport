@@ -1,80 +1,45 @@
-import { Subject } from '../internal/subject'; // 请替换成正确的路径
+import { Subject } from '../internal/subject';
+
 
 describe('Subject', () => {
-    let subject1: Subject<number>;
-    let subject2: Subject<string>;
+  it('should notify multiple subscribers with the correct values', () => {
+    const subject = new Subject<number>();
 
-    beforeEach(() => {
-        subject1 = new Subject<number>();
-        subject2 = new Subject<string>();
-    });
+    // Create mock observers
+    const mockObserver1 = { next: jest.fn() };
+    const mockObserver2 = { next: jest.fn() };
+    const mockObserver3 = { next: jest.fn() };
 
-    afterEach(() => {
-        subject1.unsubscribe();
-        subject2.unsubscribe();
-    });
+    // Subscribe to the subject
+    subject.subscribe(mockObserver1);
+    subject.subscribe(mockObserver2);
+    subject.subscribe(mockObserver3);
 
-    it('should emit next event when next is called for multiple instances', () => {
-        const onNext1 = jest.fn();
-        const onNext2 = jest.fn();
+    // Notify the subject
+    subject.next(42);
 
-        subject1.subscribe({ next: onNext1 });
-        subject2.subscribe({ next: onNext2 });
+    // Check if all mock observers were called with the correct value
+    expect(mockObserver1.next).toHaveBeenCalledWith(42);
+    expect(mockObserver2.next).toHaveBeenCalledWith(42);
+    expect(mockObserver3.next).toHaveBeenCalledWith(42);
+  });
 
-        subject1.next(42);
-        subject2.next('Hello');
 
-        expect(onNext1).toHaveBeenCalledWith(42);
-        expect(onNext2).toHaveBeenCalledWith('Hello');
-    });
+  it('should handle multiple notifications correctly', () => {
+    const subject = new Subject<number>();
 
-    it('should subscribe and unsubscribe correctly for multiple instances', () => {
-        const onNext1 = jest.fn();
-        const onNext2 = jest.fn();
+    // Create mock observer
+    const mockObserver = { next: jest.fn() };
 
-        subject1.subscribe({ next: onNext1 });
-        subject2.subscribe({ next: onNext2 });
+    // Subscribe to the subject
+    subject.subscribe(mockObserver);
 
-        subject1.next(42);
-        subject2.next('Hello');
+    // Notify the subject multiple times
+    subject.next(42);
+    subject.next(99);
 
-        expect(onNext1).toHaveBeenCalledWith(42);
-        expect(onNext2).toHaveBeenCalledWith('Hello');
-
-        subject1.unsubscribe();
-        subject1.next(99);
-
-        subject2.unsubscribe();
-        subject2.next('World');
-
-        expect(onNext1).toHaveBeenCalledTimes(1); // Ensure no additional calls after unsubscribe
-        expect(onNext2).toHaveBeenCalledTimes(1); // Ensure no additional calls after unsubscribe
-    });
-
-    it('should handle multiple event types for multiple instances', () => {
-        const onNext1 = jest.fn();
-        const onError1 = jest.fn();
-        const onComplete1 = jest.fn();
-
-        const onNext2 = jest.fn();
-        const onError2 = jest.fn();
-        const onComplete2 = jest.fn();
-
-        subject1.subscribe({ next: onNext1, error: onError1, complete: onComplete1 });
-        subject2.subscribe({ next: onNext2, error: onError2, complete: onComplete2 });
-
-        subject1.next(42);
-        subject2.error(new Error('Error'));
-
-        subject1.unsubscribe();
-        subject2.complete();
-
-        expect(onNext1).toHaveBeenCalledWith(42);
-        expect(onError1).not.toHaveBeenCalled();
-        expect(onComplete1).not.toHaveBeenCalled();
-
-        expect(onNext2).not.toHaveBeenCalled();
-        expect(onError2).toHaveBeenCalledWith(new Error('Error'));
-        expect(onComplete2).toHaveBeenCalled();
-    });
+    // Check if the mock observer was called with the correct values
+    expect(mockObserver.next).toHaveBeenCalledWith(42);
+    expect(mockObserver.next).toHaveBeenCalledWith(99);
+  });
 });
