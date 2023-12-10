@@ -1,6 +1,6 @@
 {
   "name": "@mwx47/teleport",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A library for managing and communicating events in your application through a singleton pattern. This pattern ensures that there is a single instance of the event manager, making it easy to coordinate and handle events across different parts of your codebase.",
   "main": "./src/index.js",
   "keywords": [
@@ -18,7 +18,7 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "rm -rf lib && mkdir lib && tslint -p tsconfig.json && tsc",
-    "prepublish": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run lint && npm run test && npm run build",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"
   },
