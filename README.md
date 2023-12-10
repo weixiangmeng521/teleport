@@ -1,6 +1,6 @@
-# Teleport Singleton
+# Teleport
 
-**Teleport Singleton** is a lightweight and flexible event handling library for TypeScript, inspired by RxJS. It allows you to manage and communicate events in your application through a singleton pattern. This pattern ensures that there is a single instance of the event manager, making it easy to coordinate and handle events across different parts of your codebase.
+**Teleport** is a lightweight and flexible event handling library for TypeScript, inspired by RxJS. It allows you to manage and communicate events in your application through a singleton pattern. This pattern ensures that there is a single instance of the event manager, making it easy to coordinate and handle events across different parts of your codebase.
 
 ## Features
 
@@ -12,10 +12,10 @@
 
 ## Installation
 
-Install the **Teleport Singleton** library using npm:
+Install the **Teleport** library using npm:
 
 ```bash
-npm install teleport-singleton
+npm install @weixiangmeng521/teleport
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ npm install teleport-singleton
 ### Importing
 
 ```typescript
-import { TeleportSingleton } from 'teleport-singleton';
+import { TeleportSingleton } from '@weixiangmeng521/teleport';
 ```
 
 ### Getting or Creating the Singleton Instance
@@ -70,7 +70,7 @@ teleport.clear();
 
 ## Contribution
 
-Contributions are welcome! Feel free to open issues, submit pull requests, or provide suggestions to improve the **Teleport Singleton** library.
+Contributions are welcome! Feel free to open issues, submit pull requests, or provide suggestions to improve the **Teleport** library.
 
 ## License
 
