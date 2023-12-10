@@ -31,7 +31,7 @@ export class TeleportSingleton {
      * Method to get or create the singleton instance.
      * @returns The singleton instance of TeleportSingleton.
      */
-    public static getInstantce(): TeleportSingleton {
+    public static getInstance(): TeleportSingleton {
         if (!TeleportSingleton._instance) {
             this._instance = new TeleportSingleton();
         }

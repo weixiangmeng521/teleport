@@ -4,16 +4,16 @@ describe('TeleportSingleton', () => {
     let teleport: TeleportSingleton;
 
     beforeEach(() => {
-        teleport = TeleportSingleton.getInstantce();
+        teleport = TeleportSingleton.getInstance();
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    test('getInstantce() should return the same instance', () => {
-        const instance1 = TeleportSingleton.getInstantce();
-        const instance2 = TeleportSingleton.getInstantce();
+    test('getInstance() should return the same instance', () => {
+        const instance1 = TeleportSingleton.getInstance();
+        const instance2 = TeleportSingleton.getInstance();
 
         expect(instance1).toBe(instance2);
     });
