@@ -39,3 +39,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           token: ${{ secrets.NPM_TOKEN }}      
+
+
+      - name: Read package.json
+        uses: tyankatsu0105/read-package-version-actions@v1
+        with:
+          path: './lib'
+        id: package-version
+
+      
