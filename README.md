@@ -1,6 +1,5 @@
 # Teleport
 
-[![Build Status](https://github.com/weixiangmeng521/teleport/workflows/build/badge.svg)](https://github.com/weixiangmeng521/teleport/actions)
 [![npm version](https://badge.fury.io/js/@mwx521%2Fteleport.svg)](https://badge.fury.io/js/@mwx521%2Fteleport)
 ![NPM Downloads](https://img.shields.io/npm/dw/@mwx521/teleport)
 ![NPM License](https://img.shields.io/npm/l/@mwx521/teleport)
