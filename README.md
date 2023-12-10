@@ -34,7 +34,7 @@ import { Teleport } from '@mwx47/teleport';
 ### Getting or Creating the Singleton Instance
 
 ```typescript
-const teleport = Teleport.getInstantce();
+const teleport = new Teleport();
 ```
 
 ### Emitting an Event
