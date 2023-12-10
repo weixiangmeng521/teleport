@@ -35,4 +35,4 @@ jobs:
       - run: npm i
         env:
           NODE_AUTH_TOKEN: ${{secrets.TELEPORT}}
-      - run: npm publish    
+      - run: npm run publish    
