@@ -34,5 +34,5 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm i
         env:
-          NODE_AUTH_TOKEN: ${{secrets.TELEPORT}}
-      - run: npm run publish    
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm publish --access public  
