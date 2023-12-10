@@ -1,5 +1,5 @@
 // Import the required RxJS classes and custom types
-import { Subject } from "rxjs/internal/Subject";
+import { Subject } from "./subject";
 import { EmitDataType } from "./types";
 
 /**
@@ -81,7 +81,7 @@ export class TeleportSingleton {
 
         const subject = this._eventMap.get(name);
         if (!subject) {
-            const _subject = new Subject<T>();
+            const _subject = new Subject<EmitDataType<T>>();
             this._eventMap.set(name, _subject);
             this._add2WaitMap(name, (_name: string | symbol) => {
                 const ptr = this._eventMap.get(_name);
