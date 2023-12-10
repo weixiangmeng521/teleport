@@ -28,13 +28,13 @@ npm install @mwx47/teleport
 ### Importing
 
 ```typescript
-import { TeleportSingleton } from '@mwx47/teleport';
+import { Teleport } from '@mwx47/teleport';
 ```
 
 ### Getting or Creating the Singleton Instance
 
 ```typescript
-const teleport = TeleportSingleton.getInstantce();
+const teleport = Teleport.getInstantce();
 ```
 
 ### Emitting an Event

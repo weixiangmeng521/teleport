@@ -73,7 +73,7 @@ export class TeleportSingleton {
      * @param data - The data to be emitted with the event.
      * @param callback - Optional callback to be executed after emitting the event.
      */
-    public emit<T>(name: string | symbol, data: T, callback?: () => void): void {
+    public emit<T>(name: string | symbol, data: T, callback?: () => void): TeleportSingleton {
         const emitData: EmitDataType<T> = {
             data: data,
             callback: callback,
@@ -87,9 +87,10 @@ export class TeleportSingleton {
                 const ptr = this._eventMap.get(_name);
                 ptr?.next(emitData);
             });
-            return;
+            return this;
         }
         subject.next(emitData);
+        return this;
     }
 
     /**
