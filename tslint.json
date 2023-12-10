@@ -4,6 +4,8 @@
         "tslint-config-prettier"
     ],
     "rules": {
-        "no-shadowed-variable": false
+        "no-shadowed-variable": false,
+        "object-literal-shorthand": false,
+        "no-unused-expression": false
     }    
 }

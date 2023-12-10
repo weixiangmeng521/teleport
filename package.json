@@ -24,6 +24,9 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^5.3.3"
   },
+  "peerDependencies": {
+    "rxjs": "~7.5.0"
+  },
   "files": [
     "lib/**/*"
   ]
