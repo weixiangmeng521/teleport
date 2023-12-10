@@ -1,8 +1,20 @@
 {
   "name": "@weixiangmeng521/teleport",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A library for passing data across components or business layers",
   "main": "./src/index.js",
+  "keywords": [
+    "TypeScript",
+    "Singleton Pattern",
+    "Event Handling",
+    "RxJS",
+    "Lightweight",
+    "Event Emission",
+    "Event Queues",
+    "Code Communication",
+    "TypeScript Library",
+    "Open Source"
+  ],
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "rm -rf lib && mkdir lib && tslint -p tsconfig.json && tsc",
