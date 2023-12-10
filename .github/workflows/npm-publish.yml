@@ -4,13 +4,18 @@
 name: NPM Package
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # github actions 自带插件主要是为了检出当前仓库的代码
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -27,7 +32,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
+      - run: npm i
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.teleport}}
+      - run: npm publish    
