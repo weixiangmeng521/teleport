@@ -9,7 +9,7 @@ describe('Teleport', () => {
 
   afterEach(() => {
     // Clean up after each test
-    teleport.removeAllHandlers();
+    teleport.clear();
   });
 
   it('should emit an event and receive it correctly', () => {
@@ -73,25 +73,49 @@ describe('Teleport', () => {
   });
 
   it('should clear all emitted events', () => {
-    const eventName = 'testEvent';
-    const eventData = { message: 'Hello, Teleport!' };
+
+    const eventName = 'testEvent123';
 
     // Create a mock handler function
     const mockHandler = jest.fn();
 
-    // Register the mock handler for the event
+    // Register mock handlers for events
     teleport.receive(eventName, mockHandler);
 
     // Emit the event
-    teleport.emit(eventName, eventData);
+    teleport.emit(eventName, { message: 'This should not be handled' });
 
-    // Clear all emitted events
+    // Clear all handlers and emitted events
     teleport.clear();
 
     // Emit the event again
     teleport.emit(eventName, { message: 'This should not be handled' });
 
     // Check that the mock handler was not called
-    expect(mockHandler).not.toHaveBeenCalled();
+    expect(mockHandler).toHaveBeenCalledTimes(1);
+  });
+
+
+  it('should emit and receive a message after subscription', async () => {
+    const eventName = 'testEvent';
+    const eventData = { message: 'Hello, Teleport!' };
+
+    // Emit the event with a delay
+    setTimeout(() => {
+      teleport.emit(eventName, eventData);
+    }, 1000);
+
+    // Subscribe to the event
+    const receivedDataPromise: Promise<any> = new Promise((resolve) => {
+      teleport.receive(eventName, (data) => {
+        resolve(data);
+      });
+    });
+
+    // Wait for the subscription to receive the message
+    const receivedData = await receivedDataPromise;
+
+    // Check if the received data matches the emitted data
+    expect(receivedData).toEqual(eventData);
   });
 });

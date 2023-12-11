@@ -129,7 +129,8 @@ export class TeleportSingleton {
      */
     public removeHandle(name: string|symbol): void {
         const subject = this._eventMap.get(name);
-        subject?.unsubscribe();
+        if(!subject)return;
+        subject.unsubscribe();
         this._eventMap.delete(name);
     }
 

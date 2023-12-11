@@ -6,15 +6,15 @@ export type EmitDataType<T> = {
 
 export type EventHandler = (...args: any[]) => void;
 
-export interface ObservableType {
-    next: (value: any) => void;
-    error?: (value: any) => void;
-    complete?: (value: any) => void;
+
+export interface ObserverInterface<T> {
+    next(data: T): void;
 }
-  
+
+
 
 export interface SubjectInterface<T>{
-    subscribe(observer: (value: T) => void): { unsubscribe: () => void };
+    subscribe(observer: ObserverInterface<T>): { unsubscribe: () => void }
     unsubscribe():void;
     next(value:any):void;
 }

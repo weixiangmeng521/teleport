@@ -1,45 +1,81 @@
-import { Observable } from "./observable";
-import { SubjectInterface } from "./types";
+import { Observer } from "./observer";
+import { ObserverInterface, SubjectInterface } from "./types";
 
 
-export class Subject<T> extends Observable<T> implements SubjectInterface<T> {
-    private subscription: { unsubscribe: () => void; closed?: boolean } | null = null;
 
-    constructor() {
-        super();
+
+/**
+ * Represents a generic subject class that implements the SubjectInterface.
+ * The subject is responsible for managing a list of observers and notifying them of updates.
+ * @typeparam T - The type of data that the subject will broadcast to its observers.
+ */
+export class Subject<T> implements SubjectInterface<T> {
+    /**
+     * Array to store the observers subscribed to the subject.
+     */
+    private _observers: Observer<T>[] = [];
+
+    /**
+     * Adds an observer to the list of observers.
+     * @param {Observer<T>} observer - The observer to be added.
+     * @protected
+     */
+    protected addObserver(observer: Observer<T>): void {
+        this._observers.push(observer);
     }
 
-    override subscribe(observer: (value: T) => void): { unsubscribe: () => void; closed?: boolean };
-    override subscribe(observer: { next: (value: T) => void }): { unsubscribe: () => void; closed?: boolean };
-    override subscribe(observer: ((value: T) => void) | { next: (value: T) => void }): { unsubscribe: () => void; closed?: boolean } {
-        if (typeof observer === 'function') {
-            this.subscription = super.subscribe(observer);
-        } else if (typeof observer === 'object' && observer !== null && 'next' in observer && typeof observer.next === 'function') {
-            // Observer is an object with a 'next' method
-            this.subscription = super.subscribe(observer.next);
-        } else {
-            throw new TypeError('Observer must be a function or an object with a "next" method.');
+    /**
+     * Removes an observer from the list of observers.
+     * @param {Observer<T>} observer - The observer to be removed.
+     * @public
+     */
+    public removeObserver(observer: Observer<T>): void {
+        const index = this._observers.indexOf(observer);
+        if (index !== -1) {
+            this._observers.splice(index, 1);
         }
+    }
 
+    /**
+     * Notifies all observers with the provided data.
+     * @param {any} data - The data to be broadcasted to observers.
+     * @protected
+     */
+    protected notify(data: any): void {
+        this._observers.forEach(observer => {
+            observer.next(data);
+        });
+    }
+
+    /**
+     * Subscribes an observer to the subject.
+     * @param {(value: T) => void} event - The observer function to be subscribed.
+     * @public
+     */
+    public subscribe(obj: ObserverInterface<T>): { unsubscribe: () => void } {
+        const observer = new Observer<T>(obj.next);
+        this.addObserver(observer);
         return {
-            unsubscribe: () => this.unsubscribe(),
-            closed: false,
-        };
-    }
-    
-
-    unsubscribe(): void {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-            this.subscription.closed = true; // Set the closed state
-        }
+            unsubscribe: () => {
+                this.removeObserver(observer);
+            },
+        };        
     }
 
-    getClosedState(): boolean {
-        return this.subscription?.closed || false;
+    /**
+     * Unsubscribes all observers from the subject.
+     * @public
+     */
+    public unsubscribe(): void {
+        this._observers = [];
     }
 
-    override next(value: T): void {
-        this.observers.forEach((observer) => observer(value));
+    /**
+     * Notifies all observers with the provided value.
+     * @param {T} value - The value to be broadcasted to observers.
+     * @public
+     */
+    public next(value: T): void {
+        this.notify(value);
     }
 }

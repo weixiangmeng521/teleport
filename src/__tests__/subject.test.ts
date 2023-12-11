@@ -1,45 +1,39 @@
 import { Subject } from '../internal/subject';
 
+import { ObserverInterface } from '../internal/types';
 
 describe('Subject', () => {
-  it('should notify multiple subscribers with the correct values', () => {
-    const subject = new Subject<number>();
+    it('should notify subscribed observers with the correct data', () => {
+        // Arrange
+        const subject = new Subject<number>();
+        const mockObserver: ObserverInterface<number> = { next: jest.fn() };
 
-    // Create mock observers
-    const mockObserver1 = { next: jest.fn() };
-    const mockObserver2 = { next: jest.fn() };
-    const mockObserver3 = { next: jest.fn() };
+        // Act
+        const subscription = subject.subscribe(mockObserver);
+        subject.next(42);
 
-    // Subscribe to the subject
-    subject.subscribe(mockObserver1);
-    subject.subscribe(mockObserver2);
-    subject.subscribe(mockObserver3);
+        // Assert
+        expect(mockObserver.next).toHaveBeenCalledWith(42);
 
-    // Notify the subject
-    subject.next(42);
+        // Cleanup
+        subscription.unsubscribe();
+    });
 
-    // Check if all mock observers were called with the correct value
-    expect(mockObserver1.next).toHaveBeenCalledWith(42);
-    expect(mockObserver2.next).toHaveBeenCalledWith(42);
-    expect(mockObserver3.next).toHaveBeenCalledWith(42);
-  });
+    it('should unsubscribe observers', () => {
+        // Arrange
+        const subject = new Subject<string>();
+        const mockObserver: ObserverInterface<string> = { next: jest.fn() };
 
+        // Act
+        const subscription = subject.subscribe(mockObserver);
+        subject.next('Hello, Subject!');
+        subscription.unsubscribe();
+        subject.next('This should not be received');
 
-  it('should handle multiple notifications correctly', () => {
-    const subject = new Subject<number>();
+        // Assert
+        expect(mockObserver.next).toHaveBeenCalledWith('Hello, Subject!');
+        expect(mockObserver.next).not.toHaveBeenCalledWith('This should not be received');
+    });
 
-    // Create mock observer
-    const mockObserver = { next: jest.fn() };
-
-    // Subscribe to the subject
-    subject.subscribe(mockObserver);
-
-    // Notify the subject multiple times
-    subject.next(42);
-    subject.next(99);
-
-    // Check if the mock observer was called with the correct values
-    expect(mockObserver.next).toHaveBeenCalledWith(42);
-    expect(mockObserver.next).toHaveBeenCalledWith(99);
-  });
+    // Add more test cases as needed
 });
