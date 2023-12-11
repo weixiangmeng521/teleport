@@ -4,16 +4,17 @@
 ![NPM Downloads](https://img.shields.io/npm/dw/@mwx47/teleport)
 ![NPM License](https://img.shields.io/npm/l/@mwx47/teleport)
 
+**Teleport** is a lightweight and versatile event handling library crafted for TypeScript, drawing inspiration from RxJS. It empowers you to effectively manage and communicate events within your application using a singleton pattern. This approach guarantees a single, centralized instance of the event manager, simplifying event coordination and handling across various sections of your codebase.
 
-**Teleport** is a lightweight and flexible event handling library for TypeScript, inspired by RxJS. It allows you to manage and communicate events in your application through a singleton pattern. This pattern ensures that there is a single instance of the event manager, making it easy to coordinate and handle events across different parts of your codebase.
+## Key Features
 
-## Features
+- **Singleton Design**: Implements a singleton pattern, providing a unified and singular instance for streamlined event management.
+- **Event Queues**: Facilitates event handler queuing, enabling the addition of handlers even before the corresponding events are created.
+- **Effortless Event Emission**: Easily emits events with associated data and optional callback functions.
+- **Event Registration**: Simple registration of handlers for specific events, making it easy to respond to diverse scenarios in your application.
+- **Maintenance**: Offers methods to remove specific event handlers, clear all handlers, and reset the entire event manager.
 
-- **Singleton Pattern**: Enforces a singleton pattern to provide a single, centralized instance for managing events.
-- **Event Queues**: Supports the queuing of event handlers, allowing you to add handlers even before the corresponding events are created.
-- **Event Emission**: Easily emit events with associated data and optional callback functions.
-- **Event Handling**: Register handlers for specific events, making it straightforward to respond to different scenarios in your application.
-- **Cleanup**: Provides methods to remove specific event handlers, clear all handlers, and reset the entire event manager.
+This solution stands independently, devoid of any dependencies on RxJS or external libraries.
 
 ## Installation
 
