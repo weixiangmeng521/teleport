@@ -3,7 +3,7 @@ import { ObserverInterface } from "./types";
 /**
  * Generic observer class that implements the ObserverInterface.
  * The observer is notified of updates through the provided handler function.
- * @typeparam T - The type of data that the observer will receive.
+ * @template T - The type of data that the observer will receive.
  */
 export class Observer<T> implements ObserverInterface<T> {
     /**
