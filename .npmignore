@@ -2,4 +2,6 @@ src
 tsconfig.json
 tslint.json
 .prettierrc
+.github/*
 package-lock.json
+jestconfig.json
