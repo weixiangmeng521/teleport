@@ -28,6 +28,58 @@ npm install @mwx47/teleport
 
 ## Usage
 
+### First Example
+```typescript
+import { Teleport } from '@mwx47/teleport';
+
+const teleport = new Teleport();
+
+// send data
+teleport.emit('eventName', "hello world!");
+
+teleport.receive('eventName', (data) => {
+    console.log('Event data:', data); // ✅ hello world! 
+});
+```
+
+
+### Examples with delayed subscription
+```typescript
+import { Teleport } from '@mwx47/teleport';
+
+const teleport = new Teleport();
+// send data
+teleport.emit('eventName', "hello world!");
+
+// Although it is delayed by 1000ms, the data can still be obtained
+setTimeout(() => {
+    teleport.receive('eventName', (data) => {
+        console.log('Event data:', data); // ✅ hello world! 
+    });
+}, 1000);
+```
+
+
+
+### Examples with multiple subscriptions
+```typescript
+import { Teleport } from '@mwx47/teleport';
+
+const teleport = new Teleport();
+// send data
+teleport.emit('eventName1', "Tokyo!");
+teleport.emit('eventName2', "China!");
+teleport.emit('eventName3', "London!");
+
+const subscriptions = ['eventName1', 'eventName2', 'eventName3'];
+teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
+    console.log('Hello', arg1); // ✅ Hello Tokyo!
+    console.log('Hello', arg1); // ✅ Hello China!
+    console.log('Hello', arg1); // ✅ Hello London!
+});
+```
+
+
 ### Importing
 
 ```typescript
