@@ -26,7 +26,7 @@ Install the **Teleport** library using npm:
 npm install @mwx47/teleport
 ```
 
-## Usage
+## Example
 
 ### First Example
 ```typescript
@@ -41,7 +41,6 @@ teleport.receive('eventName', (data) => {
     console.log('Event data:', data); // ✅ Event data: hello world! 
 });
 ```
-
 
 ### Examples with delayed subscription
 ```typescript
@@ -58,8 +57,6 @@ setTimeout(() => {
     });
 }, 1000);
 ```
-
-
 
 ### Examples with multiple subscriptions
 ```typescript
@@ -79,6 +76,7 @@ teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
 });
 ```
 
+## Usage
 
 ### Importing
 
