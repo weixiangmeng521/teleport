@@ -38,7 +38,7 @@ const teleport = new Teleport();
 teleport.emit('eventName', "hello world!");
 
 teleport.receive('eventName', (data) => {
-    console.log('Event data:', data); // ✅ hello world! 
+    console.log('Event data:', data); // ✅ Event data: hello world! 
 });
 ```
 
@@ -54,7 +54,7 @@ teleport.emit('eventName', "hello world!");
 // Although it is delayed by 1000ms, the data can still be obtained
 setTimeout(() => {
     teleport.receive('eventName', (data) => {
-        console.log('Event data:', data); // ✅ hello world! 
+        console.log('Event data:', data); // ✅ Event data: hello world! 
     });
 }, 1000);
 ```
