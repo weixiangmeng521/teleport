@@ -100,26 +100,21 @@ describe('TeleportSingleton', () => {
 
 
     // Test case for handling multiple events with a common handler
-    // TODO: async
-    // it('should handle multiple events with a common handler by async', () => {
-    //     // Arrange
-    //     const teleport = TeleportSingleton.getInstance();
-    //     const eventNames = ['event1', 'event2', 'event3'];
-    //     const expectedData = ['Data 1', 'Data 2', 'Data 3'];
-    //     let receivedData: any[] = [];
+    it('should handle multiple events with a common handler by async', () => {
+        // Arrange
+        const teleport = TeleportSingleton.getInstance();
+        const eventNames = ['event1', 'event2', 'event3'];
+        const expectedData = ['Data 1', 'Data 2', 'Data 3'];
 
-    //     // Act
-    //     setTimeout(() => {
-    //         teleport.multiReceive(eventNames, (...data) => {
-    //             receivedData = data;
-    //         });  
-    //     }, 1000);
+        // Act
+        setTimeout(() => {
+            teleport.multiReceive(eventNames, (...data) => {
+                expect(data).toEqual(expectedData);
+            });  
+        }, 10);
 
-    //     eventNames.forEach((eventName, index) => {
-    //         teleport.emit(eventName, expectedData[index]);
-    //     });
-
-    //     // Assert
-    //     expect(receivedData).toEqual(expectedData);
-    // });    
+        eventNames.forEach((eventName, index) => {
+            teleport.emit(eventName, expectedData[index]);
+        });
+    });    
 });

@@ -1,46 +1,44 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "outDir": "lib", // 输出目录
-      "sourceMap": false, // 是否生成sourceMap
-      "target": "ES2015", // 编译目标
-      "module": "CommonJS", // 模块类型
-      "moduleResolution": "node",
-      "allowJs": false, // 是否编辑js文件
-      "strict": true, // 严格模式
-      "noUnusedLocals": true, // 未使用变量报错
-      "experimentalDecorators": true, // 启动装饰器
-      "resolveJsonModule": true, // 加载json
-      "esModuleInterop": true, 
-      // "removeComments": false, // 删除注释
-  
-  
-      "declaration": true, // 生成定义文件
-      "declarationMap": false, // 生成定义sourceMap
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib", // 输出目录
+    "sourceMap": false, // 是否生成sourceMap
+    "target": "ES2015", // 编译目标
+    "module": "CommonJS", // 模块类型
+    "moduleResolution": "node",
+    "allowJs": false, // 是否编辑js文件
+    "strict": true, // 严格模式
+    "noUnusedLocals": true, // 未使用变量报错
+    "experimentalDecorators": true, // 启动装饰器
+    "resolveJsonModule": true, // 加载json
+    "esModuleInterop": true,
+    // "removeComments": false, // 删除注释
+    "declaration": true, // 生成定义文件
+    "declarationMap": false, // 生成定义sourceMap
     //   "declarationDir": "./dist/types", // 定义文件输出目录
-  
-
-      "noImplicitAny": true,
-      "strictNullChecks": true,
-      "strictFunctionTypes": true,
-      "strictBindCallApply": true,
-      "strictPropertyInitialization": true,
-      "noImplicitThis": true,
-      "alwaysStrict": true,
-      "noUnusedParameters": true,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      "noUncheckedIndexedAccess": true,
-      "noImplicitOverride": true,
-      "noPropertyAccessFromIndexSignature": true,
-      "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true,
-    },
-    "include": [
-      "src/*",  // 导入目录
-      "**/*.ts"
-    ],
-    "exclude": [
-        "node_modules", "**/__tests__/*", "./lib/**/*"
-    ]
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+  },
+  "include": [
+    "src/*", // 导入目录
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/*",
+    "./lib/**/*"
+  ]
 }
