@@ -58,6 +58,15 @@ teleport.receive('eventName', (data) => {
 });
 ```
 
+### Receiving and Handling Events
+
+```typescript
+teleport.multiReceive(['eventName1', 'eventName2'], (data1:any, data2:any) => {
+    // Handle the event data
+    console.log('Events data:', data1, data2);
+});
+```
+
 ### Removing a Specific Event Handler
 
 ```typescript

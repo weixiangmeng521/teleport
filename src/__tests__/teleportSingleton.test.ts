@@ -65,15 +65,61 @@ describe('TeleportSingleton', () => {
     test('clear() should clear wait queues and event handlers', () => {
         const mockHandler = jest.fn();
         teleport.receive('testEvent', mockHandler);
-    
+
         // Use casting to any
         const waitQueueMap: Map<string | symbol, ((name: string | symbol) => void)[]> = (teleport as any)._waitQueueMap;
-    
+
         expect(waitQueueMap.size).toBeGreaterThan(0);
-    
+
         teleport.clear();
-    
+
         expect(waitQueueMap.size).toBe(0);
         expect(teleport['_eventMap'].size).toBe(0); // Direct access to _eventMap without casting
     });
+
+    // Test case for handling multiple events with a common handler
+    it('should handle multiple events with a common handler', () => {
+        // Arrange
+        const teleport = TeleportSingleton.getInstance();
+        const eventNames = ['event1', 'event2', 'event3'];
+        const expectedData = ['Data 1', 'Data 2', 'Data 3'];
+        let receivedData: any[] = [];
+
+        // Act
+        teleport.multiReceive(eventNames, (...data) => {
+            receivedData = data;
+        });
+
+        eventNames.forEach((eventName, index) => {
+            teleport.emit(eventName, expectedData[index]);
+        });
+
+        // Assert
+        expect(receivedData).toEqual(expectedData);
+    });
+
+
+    // Test case for handling multiple events with a common handler
+    // TODO: async
+    // it('should handle multiple events with a common handler by async', () => {
+    //     // Arrange
+    //     const teleport = TeleportSingleton.getInstance();
+    //     const eventNames = ['event1', 'event2', 'event3'];
+    //     const expectedData = ['Data 1', 'Data 2', 'Data 3'];
+    //     let receivedData: any[] = [];
+
+    //     // Act
+    //     setTimeout(() => {
+    //         teleport.multiReceive(eventNames, (...data) => {
+    //             receivedData = data;
+    //         });  
+    //     }, 1000);
+
+    //     eventNames.forEach((eventName, index) => {
+    //         teleport.emit(eventName, expectedData[index]);
+    //     });
+
+    //     // Assert
+    //     expect(receivedData).toEqual(expectedData);
+    // });    
 });

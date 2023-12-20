@@ -9,6 +9,7 @@
         "no-unused-expression": false,
         "no-empty": false,
         "only-arrow-functions": false,
-        "unified-signatures": false
+        "unified-signatures": false,
+        "prefer-for-of": false
     }    
 }

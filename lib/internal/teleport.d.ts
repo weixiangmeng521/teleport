@@ -17,9 +17,102 @@ export declare class TeleportSingleton {
      */
     private static _instance;
     /**
+     * Map to store the count of times each individual event has been triggered.
+     * Key: Event name or symbol, Value: Number of times triggered.
+     * @protected
+     */
+    protected _eventCountMap: Map<string | symbol, number>;
+    /**
+     * Array to store lists of events that are considered as a single multi-event.
+     * Each list represents a combination of events to be treated collectively.
+     * @protected
+     */
+    protected _multiEventsList: string[][];
+    /**
+     * Map to store the last recorded trace of the total number of times a multi-event has been triggered.
+     * Key: Combined event name or symbol, Value: Last recorded trace of triggered times.
+     * @protected
+     */
+    protected _eventsUpdateMap: Map<string | symbol, number>;
+    /**
+     * Map to store arbitrary data associated with individual events.
+     * Key: Event name or symbol, Value: Associated data.
+     * @protected
+     */
+    protected _eventsDataMap: Map<string | symbol, any>;
+    /**
      * Private constructor to enforce singleton pattern.
      */
     private constructor();
+    /**
+     * Clears the map storing the count of times each individual event has been triggered.
+     */
+    protected _clearEventCountMap: () => void;
+    /**
+     * Clears the array storing lists of events that are considered as single multi-events.
+     */
+    protected _clearMultiEventsList: () => void;
+    /**
+     * Clears the map storing the last recorded trace of the total number of times a multi-event has been triggered.
+     */
+    protected _clearEventsUpdateMap: () => void;
+    /**
+     * Clears the map storing arbitrary data associated with individual events.
+     */
+    protected _clearEventsDataMap: () => void;
+    /**
+     * Adds or updates the total number of times a multi-event has been triggered to the map.
+     * @param name - Combined event name or symbol.
+     * @param times - Number of times the multi-event has been triggered.
+     */
+    protected _add2EventsUpdateMap: (name: string | symbol, times: number) => void;
+    /**
+     * Retrieves the last recorded trace of the total number of times a multi-event has been triggered from the map.
+     * @param name - Combined event name.
+     * @returns The last recorded trace of triggered times for the multi-event.
+     */
+    protected _getEventsUpdateMap: (name: string) => number;
+    /**
+     * Adds or updates arbitrary data associated with individual events to the map.
+     * @param name - Event name.
+     * @param data - Associated data.
+     */
+    protected _add2EventsDataMap: (name: string | symbol, data: any) => void;
+    /**
+     * Retrieves arbitrary data associated with an individual event from the map.
+     * @param name - Event name.
+     * @returns The associated data for the event.
+     */
+    protected _getEventsDataMap: (name: string) => any;
+    /**
+     * Increments the count of times an individual event has been triggered.
+     * @param name - Event name or symbol.
+     */
+    protected _addEventsTimes: (name: string | symbol) => void;
+    /**
+     * Retrieves the count of times an individual event has been triggered.
+     * @param name - Event name.
+     * @returns The count of times the event has been triggered.
+     */
+    protected _getEventsTimes: (name: string) => number;
+    /**
+     * Generates a unique token representing the combination of events in the provided list.
+     * @param nameList - List of event names.
+     * @returns The generated token.
+     */
+    protected _generateMultiEventsToken: (nameList: string[]) => string;
+    /**
+     * Checks for multi-event conditions and triggers automatic emission if conditions are met.
+     * @protected
+     */
+    protected _checkMultiEvents(): void;
+    /**
+     * Automatically emits a multi-event with the provided list of events and their associated data.
+     * Creates a combined event with a unique token and triggers emission to subscribers.
+     *
+     * @param {string[]} eventsList - The list of events to be combined and emitted.
+     */
+    protected _autoEmit(eventsList: string[]): void;
     /**
      * Method to get or create the singleton instance.
      * @returns The singleton instance of TeleportSingleton.
@@ -52,6 +145,13 @@ export declare class TeleportSingleton {
      * @returns The TeleportSingleton instance for chaining.
      */
     receive<T>(name: string | symbol, handler: (data: T) => void): TeleportSingleton;
+    /**
+     * Method to handle multiple events with a common handler.
+     * @param nameList - The list of event names.
+     * @param handler - The handler function to process the event data.
+     * @returns The TeleportSingleton instance for chaining.
+     */
+    multiReceive(nameList: string[], handler: (...data: any[]) => void): TeleportSingleton;
     /**
      * Method to remove a specific event handler by name.
      * @param name - The name of the event handler to be removed.

@@ -29,6 +29,14 @@ export declare class Teleport {
      */
     receive<T>(name: string | symbol, handler: (data: T) => void): void;
     /**
+     * Listens for multiple events with a common handler.
+     * When any of the specified events is emitted, the provided handler will be called.
+     * @template T - The type of data received by the handler.
+     * @param nameList - The list of event names to listen for.
+     * @param handler - The handler function to process the event data.
+     */
+    multiReceive(nameList: string[], handler: (...data: any[]) => void): void;
+    /**
      * Removes a specific event handler for the specified event.
      * @param {string | symbol} name - The name or symbol of the event.
      */
