@@ -8,6 +8,7 @@
 ![NPM Downloads](https://img.shields.io/npm/dw/@mwx47/teleport)
 ![NPM License](https://img.shields.io/npm/l/@mwx47/teleport)
 ![GitHub Workflow Status](https://github.com/weixiangmeng521/teleport/actions/workflows/master.yml/badge.svg)
+[![GitHub 仓库](https://img.shields.io/badge/GitHub-Repo-blue.svg)](https://github.com//weixiangmeng521/teleport)
 
 **Teleport** は、TypeScript 向けの軽量で多機能なイベントハンドリングライブラリで、RxJS からインスパイアを得ています。このライブラリを使用すると、アプリケーション内でのイベントを効果的に管理および通信することができます。これにより、イベントマネージャーの単一かつ中央集権的なインスタンスが保証され、コードベースのさまざまなセクションでのイベントの調整とハンドリングが簡素化されます。
 

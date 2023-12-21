@@ -8,6 +8,7 @@
 ![NPM Downloads](https://img.shields.io/npm/dw/@mwx47/teleport)
 ![NPM License](https://img.shields.io/npm/l/@mwx47/teleport)
 ![GitHub Workflow Status](https://github.com/weixiangmeng521/teleport/actions/workflows/master.yml/badge.svg)
+[![GitHub 仓库](https://img.shields.io/badge/GitHub-Repo-blue.svg)](https://github.com//weixiangmeng521/teleport)
 
 **Teleport** 是一个轻量级、多功能的 TypeScript 事件处理库，受 RxJS 启发而创建。它使您能够使用单例模式在应用程序中有效地管理和通信事件。这种方法保证了事件管理器的单一、集中的实例，简化了在代码库的各个部分之间进行事件协调和处理的操作。
 
