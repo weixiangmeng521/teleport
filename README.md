@@ -34,12 +34,12 @@ import { Teleport } from '@mwx47/teleport';
 
 const teleport = new Teleport();
 
-// send data
-teleport.emit('eventName', "hello world!");
-
 teleport.receive('eventName', (data) => {
     console.log('Event data:', data); // ✅ Event data: hello world! 
 });
+
+// send data
+teleport.emit('eventName', "hello world!");
 ```
 
 ### Examples with delayed subscription
