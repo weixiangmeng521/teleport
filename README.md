@@ -1,5 +1,9 @@
 # Teleport
 
+- [English](README.md)
+- [中文](README-zh.md)
+- [日本語](README-ja.md)
+
 [![npm version](https://badge.fury.io/js/@mwx47%2Fteleport.svg)](https://badge.fury.io/js/@mwx47%2Fteleport)
 ![NPM Downloads](https://img.shields.io/npm/dw/@mwx47/teleport)
 ![NPM License](https://img.shields.io/npm/l/@mwx47/teleport)
