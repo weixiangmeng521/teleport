@@ -26,28 +26,24 @@ export class TeleportSingleton {
     /**
      * Map to store the count of times each individual event has been triggered.
      * Key: Event name or symbol, Value: Number of times triggered.
-     * @protected
      */
     protected _eventCountMap: Map<string | symbol, number> = new Map();
 
     /**
      * Array to store lists of events that are considered as a single multi-event.
      * Each list represents a combination of events to be treated collectively.
-     * @protected
      */
     protected _multiEventsList: string[][] = [];
 
     /**
      * Map to store the last recorded trace of the total number of times a multi-event has been triggered.
      * Key: Combined event name or symbol, Value: Last recorded trace of triggered times.
-     * @protected
      */
     protected _eventsUpdateMap: Map<string | symbol, number> = new Map();
 
     /**
      * Map to store arbitrary data associated with individual events.
      * Key: Event name or symbol, Value: Associated data.
-     * @protected
      */
     protected _eventsDataMap: Map<string | symbol, any> = new Map();
 
@@ -57,6 +53,17 @@ export class TeleportSingleton {
      */
     private constructor() { }
 
+
+    /**
+     * Method to get or create the singleton instance.
+     * @returns The singleton instance of TeleportSingleton.
+     */
+    public static getInstance(): TeleportSingleton {
+        if (!TeleportSingleton._instance) {
+            this._instance = new TeleportSingleton();
+        }
+        return this._instance;
+    }
 
     /**
      * Clears the map storing the count of times each individual event has been triggered.
@@ -100,7 +107,7 @@ export class TeleportSingleton {
      * @param name - Combined event name.
      * @returns The last recorded trace of triggered times for the multi-event.
      */
-    protected _getEventsUpdateMap = (name: string): number => {
+    protected _getEventsUpdateMap = (name: string | symbol): number => {
         return this._eventsUpdateMap.get(name) ?? 0;
     }
 
@@ -146,8 +153,8 @@ export class TeleportSingleton {
      * @param nameList - List of event names.
      * @returns The generated token.
      */
-    protected _generateMultiEventsToken = (nameList: string[]) => {
-        return nameList.join(",");
+    protected _generateMultiEventsToken = (nameList: string[]): symbol => {
+        return Symbol.for(`Teleport:${nameList.join(",")}`);
     }
 
 
@@ -158,21 +165,15 @@ export class TeleportSingleton {
     protected _checkMultiEvents() {
         for (let i = 0; i < this._multiEventsList.length; i++) {
             const eventsList = this._multiEventsList[i] ?? [];
-            const timesArr = new Array(eventsList.length).fill(0);
-            for (let j = 0; j < eventsList.length; j++) {
-                const eventName = eventsList[j] ?? "";
-                const triggeredTimes = this._getEventsTimes(eventName);
-                timesArr[j] = triggeredTimes;
-            }
-
+            // every event that be executed times
+            const timesArr = eventsList.map((eventName) => this._getEventsTimes(eventName));
+            // is that one of the event that executed times not 0
             const isNotContainsZero = timesArr.indexOf(0) === -1;
             const updatedEventName = this._generateMultiEventsToken(eventsList);
             const lastTrace = this._getEventsUpdateMap(updatedEventName) ?? 0;
             const currentUpdateTimes = timesArr.reduce((x, y) => x + y, 0);
             if (isNotContainsZero) {
-                if (currentUpdateTimes !== lastTrace) {
-                    this._autoEmit(eventsList);
-                }
+                if (currentUpdateTimes !== lastTrace) this._autoEmit(eventsList);
                 this._add2EventsUpdateMap(updatedEventName, currentUpdateTimes);
             }
         }
@@ -211,17 +212,6 @@ export class TeleportSingleton {
 
 
     /**
-     * Method to get or create the singleton instance.
-     * @returns The singleton instance of TeleportSingleton.
-     */
-    public static getInstance(): TeleportSingleton {
-        if (!TeleportSingleton._instance) {
-            this._instance = new TeleportSingleton();
-        }
-        return this._instance;
-    }
-
-    /**
      * Method to add handlers to the wait queue.
      * @param name - The name or symbol of the event.
      * @param handlers - The event handlers to be added to the wait queue.
@@ -257,11 +247,6 @@ export class TeleportSingleton {
      * @param callback - Optional callback to be executed after emitting the event.
      */
     public emit<T>(name: string | symbol, data: T, callback?: () => void): TeleportSingleton {
-        const afterEmit = () => {
-            this._addEventsTimes(name);
-            this._checkMultiEvents();
-        }
-
         const emitData: EmitDataType<T> = {
             data: data,
             callback: callback,
@@ -276,44 +261,62 @@ export class TeleportSingleton {
             this._add2WaitMap(name, (_name: string | symbol) => {
                 const ptr = this._eventMap.get(_name);
                 ptr?.next(emitData);
-                afterEmit();
+                this._afterEmit(name);
             });
             return this;
         }
         subject.next(emitData);
-        afterEmit();
+        this._afterEmit(name);
         return this;
     }
 
+
+    /**
+     * After emit data then execute.
+     * @param name event name
+     */
+    private _afterEmit(name: string | symbol) {
+        this._addEventsTimes(name);
+        this._checkMultiEvents();
+    }
+    
+
+    /**
+     * handler‘s wrapper
+     * @param handler 
+     * @param mode 0 => single, 1=> multiple  
+     */
+    private _eventHandler = (handler: (...data: any[]) => void, mode:0|1) => {
+        return (emitData: EmitDataType<any>) => {
+            if(mode === 0) handler(emitData.data);
+            if(mode === 1) handler(...emitData.data);
+            emitData.callback && emitData.callback();
+        }
+    }
+
+
     /**
      * Method to receive an event and handle it with a provided handler.
-     * @template T - The type of data received by the event.
      * @param name - The name or symbol of the event.
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    public receive<T>(name: string | symbol, handler: (data: T) => void): TeleportSingleton {
-        const eventHandler = (emitData: EmitDataType<T>) => {
-            handler(emitData.data);
-            emitData.callback && emitData.callback();
-        };
-
+    public receive(name: string | symbol, handler: (data: any) => void): TeleportSingleton {
         const subject = this._eventMap.get(name);
         if (!subject) {
             const ptr = new Subject<any>();
             this._eventMap.set(name, ptr);
-            ptr.subscribe({ next: eventHandler });
+            ptr.subscribe({ next: this._eventHandler(handler, 0) });
             return this;
         }
 
-        subject.subscribe({ next: eventHandler });
-
+        subject.subscribe({ next: this._eventHandler(handler, 0) });
         if ((this._waitQueueMap.get(name) ?? []).length) {
             this._fireWaitHandlers(name);
         }
-
         return this;
     }
+
 
 
     /**
@@ -329,22 +332,16 @@ export class TeleportSingleton {
             this.receive(eventName, () => { });
         });
 
-        const eventHandler = (emitData: any) => {
-            const obj = emitData as EmitDataType<any>;
-            handler(...obj.data);
-            emitData.callback && emitData.callback();
-        };
-
         const eventsNameList = this._generateMultiEventsToken(nameList);
         const subject = this._eventMap.get(eventsNameList);
         if (!subject) {
             const ptr = new Subject<any>();
             this._eventMap.set(eventsNameList, ptr);
-            ptr.subscribe({ next: eventHandler });
+            ptr.subscribe({ next: this._eventHandler(handler, 1) });
             return this;
         }
 
-        subject.subscribe({ next: eventHandler });
+        subject.subscribe({ next: this._eventHandler(handler, 1) });
         if ((this._waitQueueMap.get(eventsNameList) ?? []).length) {
             this._fireWaitHandlers(eventsNameList);
         }

@@ -31,10 +31,10 @@ export class Teleport {
    * Registers a handler function for the specified event.
    * @template T - The type of data received by the event.
    * @param {string | symbol} name - The name or symbol of the event.
-   * @param {(data: T) => void} handler - The handler function to process the event data.
+   * @param {(data: any) => void} handler - The handler function to process the event data.
    */
-  public receive<T>(name: string | symbol, handler: (data: T) => void): void {
-    this._teleportSingleton.receive<T>(name, handler);
+  public receive(name: string | symbol, handler: (data: any) => void): void {
+    this._teleportSingleton.receive(name, handler);
   }
 
   /**
