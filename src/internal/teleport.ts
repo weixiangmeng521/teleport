@@ -168,10 +168,10 @@ export class TeleportSingleton {
             // every event that be executed times
             const timesArr = eventsList.map((eventName) => this._getEventsTimes(eventName));
             // is that one of the event that executed times not 0
-            const isNotContainsZero = timesArr.indexOf(0) === -1;
+            const isNotContainsZero = !timesArr.includes(0);
             const updatedEventName = this._generateMultiEventsToken(eventsList);
             const lastTrace = this._getEventsUpdateMap(updatedEventName) ?? 0;
-            const currentUpdateTimes = timesArr.reduce((x, y) => x + y, 0);
+            const currentUpdateTimes = timesArr.reduce((pre, cur) => pre + cur, 0);
             if (isNotContainsZero) {
                 if (currentUpdateTimes !== lastTrace) this._autoEmit(eventsList);
                 this._add2EventsUpdateMap(updatedEventName, currentUpdateTimes);
@@ -188,24 +188,16 @@ export class TeleportSingleton {
 
     protected _autoEmit(eventsList: string[]) {
         const multiEventsName = this._generateMultiEventsToken(eventsList);
-
-        const dataList = [] as any[];
-        eventsList.forEach((eventName: string) => {
-            const _data = this._getEventsDataMap(eventName);
-            dataList.push(_data);
-        })
-
+        const dataList = eventsList.map(eventName => this._getEventsDataMap(eventName));
         const emitData: EmitDataType<any[]> = { data: dataList }
-
         const subject = this._eventMap.get(multiEventsName);
         if (!subject) {
             const _subject = new Subject<any>();
             this._eventMap.set(multiEventsName, _subject);
-            this._add2WaitMap(multiEventsName, (_name: string | symbol) => {
+            return this._add2WaitMap(multiEventsName, (_name: string | symbol) => {
                 const ptr = this._eventMap.get(_name);
                 ptr?.next(emitData);
             })
-            return;
         }
         subject.next(emitData);
     }
@@ -279,7 +271,7 @@ export class TeleportSingleton {
         this._addEventsTimes(name);
         this._checkMultiEvents();
     }
-    
+
 
     /**
      * handler‘s wrapper
