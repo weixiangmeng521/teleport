@@ -1,4 +1,3 @@
-```markdown
 # Teleport
 
 - [English](README.md)
@@ -146,4 +145,3 @@ teleport.clear();
 ## 许可证
 
 该项目根据 MIT 许可证许可 - 有关详细信息，请参见 [LICENSE](LICENSE) 文件。
-```

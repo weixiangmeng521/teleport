@@ -1,4 +1,3 @@
-```markdown
 # Teleport
 
 - [English](README.md)
