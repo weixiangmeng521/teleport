@@ -19,31 +19,32 @@ export declare class TeleportSingleton {
     /**
      * Map to store the count of times each individual event has been triggered.
      * Key: Event name or symbol, Value: Number of times triggered.
-     * @protected
      */
     protected _eventCountMap: Map<string | symbol, number>;
     /**
      * Array to store lists of events that are considered as a single multi-event.
      * Each list represents a combination of events to be treated collectively.
-     * @protected
      */
     protected _multiEventsList: string[][];
     /**
      * Map to store the last recorded trace of the total number of times a multi-event has been triggered.
      * Key: Combined event name or symbol, Value: Last recorded trace of triggered times.
-     * @protected
      */
     protected _eventsUpdateMap: Map<string | symbol, number>;
     /**
      * Map to store arbitrary data associated with individual events.
      * Key: Event name or symbol, Value: Associated data.
-     * @protected
      */
     protected _eventsDataMap: Map<string | symbol, any>;
     /**
      * Private constructor to enforce singleton pattern.
      */
     private constructor();
+    /**
+     * Method to get or create the singleton instance.
+     * @returns The singleton instance of TeleportSingleton.
+     */
+    static getInstance(): TeleportSingleton;
     /**
      * Clears the map storing the count of times each individual event has been triggered.
      */
@@ -71,7 +72,7 @@ export declare class TeleportSingleton {
      * @param name - Combined event name.
      * @returns The last recorded trace of triggered times for the multi-event.
      */
-    protected _getEventsUpdateMap: (name: string) => number;
+    protected _getEventsUpdateMap: (name: string | symbol) => number;
     /**
      * Adds or updates arbitrary data associated with individual events to the map.
      * @param name - Event name.
@@ -100,7 +101,7 @@ export declare class TeleportSingleton {
      * @param nameList - List of event names.
      * @returns The generated token.
      */
-    protected _generateMultiEventsToken: (nameList: string[]) => string;
+    protected _generateMultiEventsToken: (nameList: string[]) => symbol;
     /**
      * Checks for multi-event conditions and triggers automatic emission if conditions are met.
      * @protected
@@ -113,11 +114,6 @@ export declare class TeleportSingleton {
      * @param {string[]} eventsList - The list of events to be combined and emitted.
      */
     protected _autoEmit(eventsList: string[]): void;
-    /**
-     * Method to get or create the singleton instance.
-     * @returns The singleton instance of TeleportSingleton.
-     */
-    static getInstance(): TeleportSingleton;
     /**
      * Method to add handlers to the wait queue.
      * @param name - The name or symbol of the event.
@@ -138,13 +134,23 @@ export declare class TeleportSingleton {
      */
     emit<T>(name: string | symbol, data: T, callback?: () => void): TeleportSingleton;
     /**
+     * After emit data then execute.
+     * @param name event name
+     */
+    private _afterEmit;
+    /**
+     * handler‘s wrapper
+     * @param handler
+     * @param mode 0 => single, 1=> multiple
+     */
+    private _eventHandler;
+    /**
      * Method to receive an event and handle it with a provided handler.
-     * @template T - The type of data received by the event.
      * @param name - The name or symbol of the event.
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    receive<T>(name: string | symbol, handler: (data: T) => void): TeleportSingleton;
+    receive(name: string | symbol, handler: (data: any) => void): TeleportSingleton;
     /**
      * Method to handle multiple events with a common handler.
      * @param nameList - The list of event names.

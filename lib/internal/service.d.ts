@@ -25,9 +25,9 @@ export declare class Teleport {
      * Registers a handler function for the specified event.
      * @template T - The type of data received by the event.
      * @param {string | symbol} name - The name or symbol of the event.
-     * @param {(data: T) => void} handler - The handler function to process the event data.
+     * @param {(data: any) => void} handler - The handler function to process the event data.
      */
-    receive<T>(name: string | symbol, handler: (data: T) => void): void;
+    receive(name: string | symbol, handler: (data: any) => void): void;
     /**
      * Listens for multiple events with a common handler.
      * When any of the specified events is emitted, the provided handler will be called.
