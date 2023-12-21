@@ -3,7 +3,6 @@ import { Subject } from "./subject";
 import { EmitDataType } from "./types";
 
 /**
- * Represents a singleton class for handling events using RxJS.
  * @weixiangmeng521
  */
 export class TeleportSingleton {
@@ -185,7 +184,6 @@ export class TeleportSingleton {
      * 
      * @param {string[]} eventsList - The list of events to be combined and emitted.
      */
-
     protected _autoEmit(eventsList: string[]) {
         const multiEventsName = this._generateMultiEventsToken(eventsList);
         const dataList = eventsList.map(eventName => this._getEventsDataMap(eventName));
