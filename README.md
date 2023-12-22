@@ -56,10 +56,10 @@ teleport.emit('eventName', "hello world!");
 
 // Although it is delayed by 1000ms, the data can still be obtained
 setTimeout(() => {
-    teleport.receive('eventName', (data) => {
+    const handler = teleport.receive('eventName', (data) => {
         console.log('Event data:', data); // ✅ Event data: hello world! 
         // remove handler
-        teleport.removeHandle('eventName');
+        handler.clear();
     });
 }, 1000);
 ```
@@ -75,12 +75,12 @@ teleport.emit('eventName2', "China!");
 teleport.emit('eventName3', "London!");
 
 const subscriptions = ['eventName1', 'eventName2', 'eventName3'];
-teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
+const handler = teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
     console.log('Hello', arg1); // ✅ Hello Tokyo!
     console.log('Hello', arg1); // ✅ Hello China!
     console.log('Hello', arg1); // ✅ Hello London!
     // remove handler
-    teleport.removeHandle(subscriptions);
+    handler.clear();
 });
 ```
 

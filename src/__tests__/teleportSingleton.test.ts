@@ -132,5 +132,44 @@ describe('TeleportSingleton', () => {
         expect(mockHandler).not.toHaveBeenCalled();
     });
 
-    
+
+    // self clear but not all
+    test('receive("event", () => { }).clear() should self unsubscribe the handler', () => {
+        const mockHandler1 = jest.fn();
+        const mockHandler2 = jest.fn();
+        const mockHandler3 = jest.fn();
+
+        teleport.receive("testEvent1", mockHandler1);
+        teleport.receive("testEvent1", mockHandler2).clear();
+        teleport.receive("testEvent1", mockHandler3);
+
+        teleport.emit("testEvent1", 'testData');
+
+        expect(mockHandler1).toHaveBeenCalledWith('testData');
+        expect(mockHandler2).not.toHaveBeenCalled();
+        expect(mockHandler3).toHaveBeenCalledWith('testData');
+    });
+
+
+
+    // self clear multi handler but not all
+    test('multiReceive(["event1", "event2"], () => { }).clear() should self unsubscribe the handler', () => {
+        const mockHandler1 = jest.fn();
+        const mockHandler2 = jest.fn();
+        const mockHandler3 = jest.fn();
+
+        const subList = ["testEvent1", "testEvent2"];
+        teleport.multiReceive(subList, mockHandler1);
+        teleport.multiReceive(subList, mockHandler2).clear();
+        teleport.multiReceive(subList, mockHandler3);
+
+        subList.forEach((sub) => {
+            teleport.emit(sub, 'testData');
+        });
+
+        expect(mockHandler1).toHaveBeenCalledWith('testData', 'testData');
+        expect(mockHandler2).not.toHaveBeenCalled();
+        expect(mockHandler3).toHaveBeenCalledWith('testData', 'testData');
+    });
+
 });

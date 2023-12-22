@@ -16,7 +16,7 @@ describe('Subject', () => {
         expect(mockObserver.next).toHaveBeenCalledWith(42);
 
         // Cleanup
-        subscription.unsubscribe();
+        subscription.clear();
     });
 
     it('should unsubscribe observers', () => {
@@ -27,7 +27,7 @@ describe('Subject', () => {
         // Act
         const subscription = subject.subscribe(mockObserver);
         subject.next('Hello, Subject!');
-        subscription.unsubscribe();
+        subscription.clear();
         subject.next('This should not be received');
 
         // Assert

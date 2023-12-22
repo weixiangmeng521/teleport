@@ -56,10 +56,10 @@ teleport.emit('eventName', "こんにちは、世界！");
 
 // 1000ms 遅れていてもデータは取得できます
 setTimeout(() => {
-    teleport.receive('eventName', (data) => {
+    const handle = teleport.receive('eventName', (data) => {
         console.log('イベントデータ:', data); // ✅ イベントデータ: こんにちは、世界！ 
         // ハンドラを削除
-        teleport.removeHandle('eventName');
+        handle.clear();
     });
 }, 1000);
 ```
@@ -75,14 +75,12 @@ teleport.emit('eventName2', "中国！");
 teleport.emit('eventName3', "ロンドン！");
 
 const subscriptions = ['eventName1', 'eventName2', 'eventName3'];
-teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
-
-
+const handler = teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
     console.log('こんにちは', arg1); // ✅ こんにちは、東京！
     console.log('こんにちは', arg1); // ✅ こんにちは、中国！
     console.log('こんにちは', arg1); // ✅ こんにちは、ロンドン！
     // ハンドラを削除
-    teleport.removeHandle(subscriptions);
+    handler.clear();
 });
 ```
 

@@ -153,14 +153,18 @@ export declare class TeleportSingleton {
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    receive(name: string | symbol, handler: (data: any) => void): TeleportSingleton;
+    receive(name: string | symbol, handler: (data: any) => void): {
+        clear: () => void;
+    };
     /**
      * Method to handle multiple events with a common handler.
      * @param nameList - The list of event names.
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    multiReceive(nameList: string[], handler: (...data: any[]) => void): TeleportSingleton;
+    multiReceive(nameList: string[], handler: (...data: any[]) => void): {
+        clear: () => void;
+    };
     /**
      * Method to remove a specific event handler by name.
      * @param name - The name of the event handler to be removed.

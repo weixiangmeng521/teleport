@@ -8,7 +8,7 @@ export interface ObserverInterface<T> {
 }
 export interface SubjectInterface<T> {
     subscribe(observer: ObserverInterface<T>): {
-        unsubscribe: () => void;
+        clear: () => void;
     };
     unsubscribe(): void;
     next(value: any): void;

@@ -304,20 +304,19 @@ export class TeleportSingleton {
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    public receive(name: string | symbol, handler: (data: any) => void): TeleportSingleton {
+    public receive(name: string | symbol, handler: (data: any) => void): { clear: () => void } {
         const subject = this._eventMap.get(name);
         if (!subject) {
             const ptr = new Subject<any>();
             this._eventMap.set(name, ptr);
-            ptr.subscribe({ next: this._eventHandler(handler, 0) });
-            return this;
+            return ptr.subscribe({ next: this._eventHandler(handler, 0) });
         }
 
-        subject.subscribe({ next: this._eventHandler(handler, 0) });
+        const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 0) });
         if ((this._waitQueueMap.get(name) ?? []).length) {
             this._fireWaitHandlers(name);
         }
-        return this;
+        return clearHandler;
     }
 
 
@@ -328,27 +327,37 @@ export class TeleportSingleton {
      * @param handler - The handler function to process the event data.
      * @returns The TeleportSingleton instance for chaining.
      */
-    public multiReceive(nameList: string[], handler: (...data: any[]) => void): TeleportSingleton {
+    public multiReceive(nameList: string[], handler: (...data: any[]) => void): { clear: () => void } {
         this._multiEventsList.push(nameList);
 
-        nameList.forEach((eventName) => {
-            this.receive(eventName, () => { });
+        const clearChildrenHandlers = nameList.map((eventName) => {
+            return this.receive(eventName, () => { });
         });
+
+        // clear child handlers and father handler
+        const _this = this;
+        const clearAll = (names:string[], clearHandler:{clear: () => void}) => {
+            return { clear: () => {
+                _this._removeMultiEvent(names);
+                clearHandler.clear();
+                clearChildrenHandlers.forEach((childHandler) => { childHandler.clear() });
+            }}
+        }
 
         const eventsNameList = this._generateMultiEventsToken(nameList);
         const subject = this._eventMap.get(eventsNameList);
         if (!subject) {
             const ptr = new Subject<any>();
             this._eventMap.set(eventsNameList, ptr);
-            ptr.subscribe({ next: this._eventHandler(handler, 1) });
-            return this;
+            const clearHandler = ptr.subscribe({ next: this._eventHandler(handler, 1) });
+            return clearAll(nameList, clearHandler);
         }
 
-        subject.subscribe({ next: this._eventHandler(handler, 1) });
+        const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 1) });
         if ((this._waitQueueMap.get(eventsNameList) ?? []).length) {
             this._fireWaitHandlers(eventsNameList);
         }
-        return this;
+        return clearAll(nameList, clearHandler);
     }
 
     /**

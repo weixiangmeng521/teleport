@@ -31,12 +31,13 @@ export class Teleport {
    * Registers a handler function for the specified event.
    * @param {string | symbol | string[]} nameOrNamesList - The name or symbol of the event.
    * @param {(data: any) => void} handler - The handler function to process the event data.
+   * @returns {{ clear: () => void }} clear handler
    */
-  public receive(nameOrNamesList: string | symbol | string[], handler: (data: any) => void): void {
+  public receive(nameOrNamesList: string | symbol | string[], handler: (data: any) => void): { clear: () => void } {
     if(Array.isArray(nameOrNamesList)){
       return this.multiReceive(nameOrNamesList, handler);
     }
-    this._teleportSingleton.receive(nameOrNamesList, handler);
+    return this._teleportSingleton.receive(nameOrNamesList, handler);
   }
 
   /**
@@ -45,9 +46,10 @@ export class Teleport {
    * @template T - The type of data received by the handler.
    * @param nameList - The list of event names to listen for.
    * @param handler - The handler function to process the event data.
+   * @returns {{ clear: () => void }} clear handler
    */
-  public multiReceive(nameList: string[], handler: (...data: any[]) => void): void {
-    this._teleportSingleton.multiReceive(nameList, handler);
+  public multiReceive(nameList: string[], handler: (...data: any[]) => void): { clear: () => void }  {
+    return this._teleportSingleton.multiReceive(nameList, handler);
   }
 
   /**

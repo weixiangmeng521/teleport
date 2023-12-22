@@ -14,7 +14,7 @@ export interface ObserverInterface<T> {
 
 
 export interface SubjectInterface<T>{
-    subscribe(observer: ObserverInterface<T>): { unsubscribe: () => void }
+    subscribe(observer: ObserverInterface<T>): { clear: () => void }
     unsubscribe():void;
     next(value:any):void;
 }

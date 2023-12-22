@@ -56,10 +56,10 @@ teleport.emit('eventName', "你好，世界！");
 
 // 虽然延迟了1000ms，但仍然可以获取数据
 setTimeout(() => {
-    teleport.receive('eventName', (data) => {
+    const handle = teleport.receive('eventName', (data) => {
         console.log('事件数据:', data); // ✅ 事件数据: 你好，世界！ 
         // 移除处理程序
-        teleport.removeHandle('eventName');
+        handle.clear();
     });
 }, 1000);
 ```
@@ -75,12 +75,12 @@ teleport.emit('eventName2', "中国！");
 teleport.emit('eventName3', "伦敦！");
 
 const subscriptions = ['eventName1', 'eventName2', 'eventName3'];
-teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
+const handle = teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
     console.log('你好', arg1); // ✅ 你好，东京！
     console.log('你好', arg2); // ✅ 你好，中国！
     console.log('你好', arg3); // ✅ 你好，伦敦！
     // 移除处理程序
-    teleport.removeHandle(subscriptions);
+    handle.clear();
 });
 ```
 

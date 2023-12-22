@@ -31,10 +31,10 @@ export declare class Subject<T> implements SubjectInterface<T> {
     /**
      * Subscribes an observer to the subject.
      * @param {(value: T) => void} event - The observer function to be subscribed.
-     * @returns {{ unsubscribe: () => void }} - An object containing the unsubscribe function.
+     * @returns {{ clear: () => void }} - An object containing the unsubscribe function.
      */
     subscribe(obj: ObserverInterface<T>): {
-        unsubscribe: () => void;
+        clear: () => void;
     };
     /**
      * Unsubscribes all observers from the subject.

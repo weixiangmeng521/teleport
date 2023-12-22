@@ -48,13 +48,13 @@ export class Subject<T> implements SubjectInterface<T> {
     /**
      * Subscribes an observer to the subject.
      * @param {(value: T) => void} event - The observer function to be subscribed.
-     * @returns {{ unsubscribe: () => void }} - An object containing the unsubscribe function.
+     * @returns {{ clear: () => void }} - An object containing the unsubscribe function.
      */
-    public subscribe(obj: ObserverInterface<T>): { unsubscribe: () => void } {
+    public subscribe(obj: ObserverInterface<T>): { clear: () => void } {
         const observer = new Observer<T>(obj.next);
         this.addObserver(observer);
         return {
-            unsubscribe: () => {
+            clear: () => {
                 this.removeObserver(observer);
             },
         };        
