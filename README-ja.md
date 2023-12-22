@@ -141,7 +141,7 @@ teleport.removeHandle('eventName');
 ### 特定の複数のイベントハンドラの削除
 
 ```typescript
-teleport.removeHandle(['eventName1', 'eventName2']);
+teleport.removeHandle('eventName1');
 // または
 teleport.removeMultiHandle(['eventName1', 'eventName2']);
 ```

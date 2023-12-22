@@ -139,7 +139,7 @@ teleport.removeHandle('eventName');
 ### Removing a Specific Multiple Events Handler
 
 ```typescript
-teleport.removeHandle(['eventName1', 'eventName2']);
+teleport.removeHandle('eventName1');
 // or
 teleport.removeMultiHandle(['eventName1', 'eventName2']);
 ```
