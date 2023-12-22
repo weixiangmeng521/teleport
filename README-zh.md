@@ -139,7 +139,7 @@ teleport.removeHandle('eventName');
 ### 移除特定多个事件处理程序
 
 ```typescript
-teleport.removeHandle('eventName1');
+teleport.removeHandle(['eventName1', 'eventName2']);
 // 或者
 teleport.removeMultiHandle(['eventName1', 'eventName2']);
 ```

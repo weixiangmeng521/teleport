@@ -136,10 +136,10 @@ teleport.multiReceive(['eventName1', 'eventName2'], (data1:any, data2:any) => {
 teleport.removeHandle('eventName');
 ```
 
-### Removing a Specific Multiple Events Handler
+### Removing Specific Multiple Events Handler
 
 ```typescript
-teleport.removeHandle('eventName1');
+teleport.removeHandle(['eventName1', 'eventName2']);
 // or
 teleport.removeMultiHandle(['eventName1', 'eventName2']);
 ```
