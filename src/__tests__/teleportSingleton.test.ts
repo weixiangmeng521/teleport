@@ -116,5 +116,21 @@ describe('TeleportSingleton', () => {
         eventNames.forEach((eventName, index) => {
             teleport.emit(eventName, expectedData[index]);
         });
-    });    
+    });
+
+
+    test('removeMultiHandle() should unsubscribe the handler', () => {
+        const mockHandler = jest.fn();
+        const subscriptions = ['testEvent1', 'testEvent2'];
+        teleport.multiReceive(subscriptions, mockHandler);
+
+        teleport.removeMultiHandle(subscriptions);
+        subscriptions.forEach((sub) => {
+            teleport.emit(sub, 'testData');
+        })
+        
+        expect(mockHandler).not.toHaveBeenCalled();
+    });
+
+    
 });

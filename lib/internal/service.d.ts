@@ -23,11 +23,10 @@ export declare class Teleport {
     emit<T>(name: string | symbol, data: T, callback?: () => void): TeleportSingleton;
     /**
      * Registers a handler function for the specified event.
-     * @template T - The type of data received by the event.
-     * @param {string | symbol} name - The name or symbol of the event.
+     * @param {string | symbol | string[]} nameOrNamesList - The name or symbol of the event.
      * @param {(data: any) => void} handler - The handler function to process the event data.
      */
-    receive(name: string | symbol, handler: (data: any) => void): void;
+    receive(nameOrNamesList: string | symbol | string[], handler: (data: any) => void): void;
     /**
      * Listens for multiple events with a common handler.
      * When any of the specified events is emitted, the provided handler will be called.
@@ -38,9 +37,9 @@ export declare class Teleport {
     multiReceive(nameList: string[], handler: (...data: any[]) => void): void;
     /**
      * Removes a specific event handler for the specified event.
-     * @param {string | symbol} name - The name or symbol of the event.
+     * @param {string | symbol | string[]} nameOrNamesList - The name or symbol of the event.
      */
-    removeHandle(name: string | symbol): void;
+    removeHandle(nameOrNamesList: string | symbol | string[]): void;
     /**
      * Removes all event handlers.
      */

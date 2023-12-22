@@ -12,6 +12,8 @@ describe('Teleport', () => {
     teleport.clear();
   });
 
+
+
   it('should emit an event and receive it correctly', () => {
     const eventName = 'testEvent';
     const eventData = { message: 'Hello, Teleport!' };
@@ -28,6 +30,28 @@ describe('Teleport', () => {
     // Check if the mock handler was called with the correct data
     expect(mockHandler).toHaveBeenCalledWith(eventData);
   });
+
+
+  it('should emit an multiple event and receive it correctly', () => {
+    const eventNameList = ['testEvent1', 'testEvent2'];
+    const eventData = { message: 'Hello, Teleport!' };
+
+    // Create a mock handler function
+    const mockHandler = jest.fn();
+
+    // Register the mock handler for the event
+    teleport.receive(eventNameList, mockHandler);
+
+    // Emit the event
+    eventNameList.forEach((evt) => {
+      teleport.emit(evt, eventData);
+    })
+    
+    // Check if the mock handler was called with the correct data
+    expect(mockHandler).toHaveBeenCalledWith(eventData, eventData);
+  });
+
+
 
   it('should remove a specific event handler', () => {
     const eventName = 'testEvent';
@@ -47,6 +71,8 @@ describe('Teleport', () => {
     // Check that the mock handler was not called
     expect(mockHandler).not.toHaveBeenCalled();
   });
+
+
 
   it('should remove all event handlers', () => {
     const eventName1 = 'event1';
@@ -72,8 +98,9 @@ describe('Teleport', () => {
     expect(mockHandler2).not.toHaveBeenCalled();
   });
 
-  it('should clear all emitted events', () => {
 
+
+  it('should clear all emitted events', () => {
     const eventName = 'testEvent123';
 
     // Create a mock handler function
@@ -118,4 +145,27 @@ describe('Teleport', () => {
     // Check if the received data matches the emitted data
     expect(receivedData).toEqual(eventData);
   });
+
+
+  it('should remove a specific multiple event handler', () => {
+    const eventNameList = ['testEvent1', 'testEvent2'];
+
+    // Create a mock handler function
+    const mockHandler = jest.fn();
+
+    // Register the mock handler for the event
+    teleport.receive(eventNameList, mockHandler);
+
+    // Remove the event handler
+    teleport.removeHandle(eventNameList);
+
+    // Emit the event
+    eventNameList.forEach((evt) => {
+      teleport.emit(evt, { message: 'This should not be handled' });
+    })
+
+    // Check that the mock handler was not called
+    expect(mockHandler).not.toHaveBeenCalled();
+  });
+
 });

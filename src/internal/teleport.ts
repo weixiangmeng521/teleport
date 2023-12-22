@@ -1,6 +1,7 @@
 // Import the required RxJS classes and custom types
 import { Subject } from "./subject";
 import { EmitDataType } from "./types";
+import { isArrayEqual } from "./utils";
 
 /**
  * @weixiangmeng521
@@ -76,6 +77,18 @@ export class TeleportSingleton {
      */
     protected _clearMultiEventsList = () => {
         this._multiEventsList = [];
+    }
+
+    /**
+     * remove one of the multi event
+     */
+    protected _removeMultiEvent = (nameList:string[]) => {
+        for (let i = 0; i < this._multiEventsList.length; i++) {
+            const multiEvent = this._multiEventsList[i] ?? [];
+            if(isArrayEqual(nameList, multiEvent)){
+                this._multiEventsList.splice(i, 1);
+            }
+        }
     }
 
     /**
@@ -338,11 +351,6 @@ export class TeleportSingleton {
         return this;
     }
 
-
-
-
-
-
     /**
      * Method to remove a specific event handler by name.
      * @param name - The name of the event handler to be removed.
@@ -353,6 +361,17 @@ export class TeleportSingleton {
         subject.unsubscribe();
         this._eventMap.delete(name);
     }
+
+    /**
+     * Remove one of the multi handle
+     * @param nameList 
+     */
+    public removeMultiHandle(nameList:string[]){
+        this._removeMultiEvent(nameList);
+        const token = this._generateMultiEventsToken(nameList);
+        this.removeHandle(token);
+    }
+
 
     /**
      * Method to remove all event handlers.

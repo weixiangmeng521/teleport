@@ -1,6 +1,5 @@
 import { Subject } from "./subject";
 /**
- * Represents a singleton class for handling events using RxJS.
  * @weixiangmeng521
  */
 export declare class TeleportSingleton {
@@ -53,6 +52,10 @@ export declare class TeleportSingleton {
      * Clears the array storing lists of events that are considered as single multi-events.
      */
     protected _clearMultiEventsList: () => void;
+    /**
+     * remove one of the multi event
+     */
+    protected _removeMultiEvent: (nameList: string[]) => void;
     /**
      * Clears the map storing the last recorded trace of the total number of times a multi-event has been triggered.
      */
@@ -163,6 +166,11 @@ export declare class TeleportSingleton {
      * @param name - The name of the event handler to be removed.
      */
     removeHandle(name: string | symbol): void;
+    /**
+     * Remove one of the multi handle
+     * @param nameList
+     */
+    removeMultiHandle(nameList: string[]): void;
     /**
      * Method to remove all event handlers.
      */

@@ -58,6 +58,8 @@ teleport.emit('eventName', "hello world!");
 setTimeout(() => {
     teleport.receive('eventName', (data) => {
         console.log('Event data:', data); // ✅ Event data: hello world! 
+        // remove handler
+        teleport.removeHandle('eventName');
     });
 }, 1000);
 ```
@@ -77,6 +79,8 @@ teleport.receive(subscriptions, (arg1:string, arg2:string, arg3:string) => {
     console.log('Hello', arg1); // ✅ Hello Tokyo!
     console.log('Hello', arg1); // ✅ Hello China!
     console.log('Hello', arg1); // ✅ Hello London!
+    // remove handler
+    teleport.removeHandle(subscriptions);
 });
 ```
 
@@ -115,6 +119,11 @@ teleport.receive('eventName', (data) => {
 ### Receiving and Handling Events
 
 ```typescript
+teleport.receive(['eventName1', 'eventName2'], (data1:any, data2:any) => {
+    // Handle the event data
+    console.log('Events data:', data1, data2);
+});
+// or
 teleport.multiReceive(['eventName1', 'eventName2'], (data1:any, data2:any) => {
     // Handle the event data
     console.log('Events data:', data1, data2);
@@ -125,6 +134,14 @@ teleport.multiReceive(['eventName1', 'eventName2'], (data1:any, data2:any) => {
 
 ```typescript
 teleport.removeHandle('eventName');
+```
+
+### Removing a Specific Multiple Events Handler
+
+```typescript
+teleport.removeHandle(['eventName1', 'eventName2']);
+// or
+teleport.removeMultiHandle(['eventName1', 'eventName2']);
 ```
 
 ### Removing All Event Handlers
