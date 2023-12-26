@@ -331,14 +331,14 @@ export class TeleportSingleton {
         this._multiEventsList.push(nameList);
 
         const clearChildrenHandlers = nameList.map((eventName) => {
+            // TODO: 收集receive到的数据，储存到一个map里面，如果clear，就同时也clear掉里面的数据。
             return this.receive(eventName, () => { });
         });
 
         // clear child handlers and father handler
-        const _this = this;
         const clearAll = (names:string[], clearHandler:{clear: () => void}) => {
             return { clear: () => {
-                _this._removeMultiEvent(names);
+                this._removeMultiEvent(names);
                 clearHandler.clear();
                 clearChildrenHandlers.forEach((childHandler) => { childHandler.clear() });
             }}
