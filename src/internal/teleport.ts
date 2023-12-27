@@ -1,5 +1,6 @@
 // Import the required RxJS classes and custom types
 import { Subject } from "./subject";
+import { TaskQueue, LazyTaskQueue } from "./task_queue";
 import { EmitDataType } from "./types";
 import { isArrayEqual } from "./utils";
 
@@ -12,10 +13,12 @@ export class TeleportSingleton {
      */
     protected _eventMap: Map<string | symbol, Subject<any>> = new Map();
 
+
     /**
-     * Map to store queued event handlers waiting for the event to be created.
+     * Task queue
      */
-    protected _waitQueueMap: Map<string | symbol, ((name: string | symbol) => void)[]> = new Map();
+    protected _taskQueue:LazyTaskQueue = new TaskQueue();
+
 
     /**
      * Singleton instance.
@@ -205,7 +208,7 @@ export class TeleportSingleton {
         if (!subject) {
             const _subject = new Subject<any>();
             this._eventMap.set(multiEventsName, _subject);
-            return this._add2WaitMap(multiEventsName, (_name: string | symbol) => {
+            return this._add2TaskQueue(multiEventsName, (_name: string | symbol) => {
                 const ptr = this._eventMap.get(_name);
                 ptr?.next(emitData);
             })
@@ -219,27 +222,18 @@ export class TeleportSingleton {
      * @param name - The name or symbol of the event.
      * @param handlers - The event handlers to be added to the wait queue.
      */
-    protected _add2WaitMap(name: string | symbol, ...handlers: ((name: string | symbol) => void)[]): void {
-        if (this._waitQueueMap.has(name)) {
-            const queue = this._waitQueueMap.get(name) ?? [];
-            queue.push(...handlers);
-            this._waitQueueMap.set(name, queue);
-            return;
-        }
-        this._waitQueueMap.set(name, handlers);
+    protected _add2TaskQueue(name: string | symbol, ...handlers: ((name: string | symbol) => void)[]): void {
+        handlers.forEach((handler) => {
+            this._taskQueue.add(name, handler);
+        })
     }
 
     /**
      * Method to execute queued handlers for a specific event.
      * @param name - The name or symbol of the event.
      */
-    protected _fireWaitHandlers(name: string | symbol): void {
-        const queue = this._waitQueueMap.get(name) ?? [];
-        while (queue.length) {
-            const fn = queue.shift();
-            fn && fn(name);
-        }
-        this._waitQueueMap.set(name, []);
+    protected _fireTaskQueue(name: string | symbol): void {
+        this._taskQueue.schedule(name);
     }
 
     /**
@@ -261,7 +255,7 @@ export class TeleportSingleton {
         if (!subject) {
             const _subject = new Subject<EmitDataType<T>>();
             this._eventMap.set(name, _subject);
-            this._add2WaitMap(name, (_name: string | symbol) => {
+            this._add2TaskQueue(name, (_name: string | symbol) => {
                 const ptr = this._eventMap.get(_name);
                 ptr?.next(emitData);
                 this._afterEmit(name);
@@ -313,9 +307,7 @@ export class TeleportSingleton {
         }
 
         const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 0) });
-        if ((this._waitQueueMap.get(name) ?? []).length) {
-            this._fireWaitHandlers(name);
-        }
+        this._fireTaskQueue(name);
         return clearHandler;
     }
 
@@ -354,9 +346,7 @@ export class TeleportSingleton {
         }
 
         const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 1) });
-        if ((this._waitQueueMap.get(eventsNameList) ?? []).length) {
-            this._fireWaitHandlers(eventsNameList);
-        }
+        this._fireTaskQueue(eventsNameList);
         return clearAll(nameList, clearHandler);
     }
 
@@ -396,7 +386,7 @@ export class TeleportSingleton {
      * Method to clear both wait queues and event handlers.
      */
     public clear(): void {
-        this._waitQueueMap.clear();
+        this._taskQueue.clear();
         this.removeAllHandlers();
         this._clearEventCountMap();
         this._clearMultiEventsList();

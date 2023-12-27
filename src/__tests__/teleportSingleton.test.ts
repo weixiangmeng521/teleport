@@ -1,4 +1,5 @@
 import { TeleportSingleton } from '../index';
+import { TaskQueue } from '../internal/task_queue';
 
 describe('TeleportSingleton', () => {
     let teleport: TeleportSingleton;
@@ -62,19 +63,19 @@ describe('TeleportSingleton', () => {
         expect(mockHandler2).not.toHaveBeenCalled();
     });
 
-    test('clear() should clear wait queues and event handlers', () => {
+    test('clear() should clear task queues and event handlers', () => {
         const mockHandler = jest.fn();
         teleport.receive('testEvent', mockHandler);
 
         // Use casting to any
-        const waitQueueMap: Map<string | symbol, ((name: string | symbol) => void)[]> = (teleport as any)._waitQueueMap;
+        const taskQueue: TaskQueue = (teleport as any)._taskQueue;
 
-        expect(waitQueueMap.size).toBeGreaterThan(0);
+        expect(taskQueue.getQueueLength()).toBeGreaterThan(0);
 
         teleport.clear();
 
-        expect(waitQueueMap.size).toBe(0);
-        expect(teleport['_eventMap'].size).toBe(0); // Direct access to _eventMap without casting
+        expect(taskQueue.getQueueLength()).toBe(0);
+        expect(teleport['_taskQueue'].getQueueLength()).toBe(0); // Direct access to _eventMap without casting
     });
 
     // Test case for handling multiple events with a common handler

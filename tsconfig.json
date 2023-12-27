@@ -39,6 +39,7 @@
   "exclude": [
     "node_modules",
     "**/__tests__/*",
-    "./lib/**/*"
+    "lib",
+    "index.d.ts"
   ]
 }
