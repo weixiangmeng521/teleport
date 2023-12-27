@@ -1,4 +1,5 @@
 import { Subject } from "./subject";
+import { LazyTaskQueue } from "./task_queue";
 /**
  * @weixiangmeng521
  */
@@ -8,9 +9,9 @@ export declare class TeleportSingleton {
      */
     protected _eventMap: Map<string | symbol, Subject<any>>;
     /**
-     * Map to store queued event handlers waiting for the event to be created.
+     * Task queue
      */
-    protected _waitQueueMap: Map<string | symbol, ((name: string | symbol) => void)[]>;
+    protected _taskQueue: LazyTaskQueue;
     /**
      * Singleton instance.
      */
@@ -122,12 +123,12 @@ export declare class TeleportSingleton {
      * @param name - The name or symbol of the event.
      * @param handlers - The event handlers to be added to the wait queue.
      */
-    protected _add2WaitMap(name: string | symbol, ...handlers: ((name: string | symbol) => void)[]): void;
+    protected _add2TaskQueue(name: string | symbol, ...handlers: ((name: string | symbol) => void)[]): void;
     /**
      * Method to execute queued handlers for a specific event.
      * @param name - The name or symbol of the event.
      */
-    protected _fireWaitHandlers(name: string | symbol): void;
+    protected _fireTaskQueue(name: string | symbol): void;
     /**
      * Method to emit an event with data and optional callback.
      * @template T - The type of data to be emitted.

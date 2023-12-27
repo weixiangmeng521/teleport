@@ -10,6 +10,7 @@
         "no-empty": false,
         "only-arrow-functions": false,
         "unified-signatures": false,
-        "prefer-for-of": false
+        "prefer-for-of": false,
+        "max-classes-per-file": false
     }    
 }
