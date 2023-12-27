@@ -15,7 +15,7 @@
 ## Key Features
 
 - **Singleton Design**: Implements a singleton pattern, providing a unified and singular instance for streamlined event management.
-- **Event Queues**: Facilitates event handler queuing, enabling the addition of handlers even before the corresponding events are created.
+- **Event Queues**: When a message is emited, and there are no subscribers at the moment, the message will be temporarily queued until a subscription is established. Simultaneously, the task queue optimizes the execution of identical tasks.
 - **Effortless Event Emission**: Easily emits events with associated data and optional callback functions.
 - **Event Registration**: Simple registration of handlers for specific events, making it easy to respond to diverse scenarios in your application.
 - **Maintenance**: Offers methods to remove specific event handlers, clear all handlers, and reset the entire event manager.
