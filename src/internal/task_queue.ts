@@ -133,8 +133,7 @@ export class TaskQueue {
 // the last execution will overwrite the previous ones and 
 // only the last task will be executed.
 export class LazyTaskQueue extends TaskQueue{
-
-
+    
     constructor(){
         super()
     }
