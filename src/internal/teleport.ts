@@ -131,7 +131,7 @@ export class TeleportSingleton {
      * @returns The TeleportSingleton instance for chaining.
      */
     public receive(name: string | symbol, handler: (data: any) => void): { clear: () => void } {
-        const subject = this._eventMap.get(name) ?? new Subject<any>();;
+        const subject = this._eventMap.get(name) ?? new Subject<any>();
         this._eventMap.set(name, subject);
         const clearHandler = subject.subscribe({ 
             next: (emitData: EmitDataType<any>) => {
