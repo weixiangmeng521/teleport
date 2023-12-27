@@ -1,8 +1,9 @@
 // Import the required RxJS classes and custom types
+import { GroupSubject } from "./order_map";
 import { Subject } from "./subject";
 import { TaskQueue, LazyTaskQueue } from "./task_queue";
 import { EmitDataType } from "./types";
-import { isArrayEqual } from "./utils";
+
 
 /**
  * @weixiangmeng521
@@ -25,30 +26,11 @@ export class TeleportSingleton {
      */
     private static _instance: TeleportSingleton;
 
-
     /**
-     * Map to store the count of times each individual event has been triggered.
-     * Key: Event name or symbol, Value: Number of times triggered.
-     */
-    protected _eventCountMap: Map<string | symbol, number> = new Map();
+    * group event map
+    */
+    private _groupEventMap:Map<symbol, GroupSubject> = new Map(); 
 
-    /**
-     * Array to store lists of events that are considered as a single multi-event.
-     * Each list represents a combination of events to be treated collectively.
-     */
-    protected _multiEventsList: string[][] = [];
-
-    /**
-     * Map to store the last recorded trace of the total number of times a multi-event has been triggered.
-     * Key: Combined event name or symbol, Value: Last recorded trace of triggered times.
-     */
-    protected _eventsUpdateMap: Map<string | symbol, number> = new Map();
-
-    /**
-     * Map to store arbitrary data associated with individual events.
-     * Key: Event name or symbol, Value: Associated data.
-     */
-    protected _eventsDataMap: Map<string | symbol, any> = new Map();
 
 
     /**
@@ -68,100 +50,8 @@ export class TeleportSingleton {
         return this._instance;
     }
 
-    /**
-     * Clears the map storing the count of times each individual event has been triggered.
-     */
-    protected _clearEventCountMap = () => {
-        this._eventCountMap = new Map();
-    }
 
-    /**
-     * Clears the array storing lists of events that are considered as single multi-events.
-     */
-    protected _clearMultiEventsList = () => {
-        this._multiEventsList = [];
-    }
 
-    /**
-     * remove one of the multi event
-     */
-    protected _removeMultiEvent = (nameList:string[]) => {
-        for (let i = 0; i < this._multiEventsList.length; i++) {
-            const multiEvent = this._multiEventsList[i] ?? [];
-            if(isArrayEqual(nameList, multiEvent)){
-                this._multiEventsList.splice(i, 1);
-            }
-        }
-    }
-
-    /**
-     * Clears the map storing the last recorded trace of the total number of times a multi-event has been triggered.
-     */
-    protected _clearEventsUpdateMap = () => {
-        this._eventsUpdateMap = new Map();
-    }
-
-    /**
-     * Clears the map storing arbitrary data associated with individual events.
-     */
-    protected _clearEventsDataMap = () => {
-        this._eventsDataMap = new Map();
-    }
-
-    /**
-     * Adds or updates the total number of times a multi-event has been triggered to the map.
-     * @param name - Combined event name or symbol.
-     * @param times - Number of times the multi-event has been triggered.
-     */
-    protected _add2EventsUpdateMap = (name: string | symbol, times: number) => {
-        this._eventsUpdateMap.set(name, times);
-    }
-
-    /**
-     * Retrieves the last recorded trace of the total number of times a multi-event has been triggered from the map.
-     * @param name - Combined event name.
-     * @returns The last recorded trace of triggered times for the multi-event.
-     */
-    protected _getEventsUpdateMap = (name: string | symbol): number => {
-        return this._eventsUpdateMap.get(name) ?? 0;
-    }
-
-    /**
-     * Adds or updates arbitrary data associated with individual events to the map.
-     * @param name - Event name.
-     * @param data - Associated data.
-     */
-    protected _add2EventsDataMap = (name: string | symbol, data: any) => {
-        this._eventsDataMap.set(name, data);
-    }
-
-    /**
-     * Retrieves arbitrary data associated with an individual event from the map.
-     * @param name - Event name.
-     * @returns The associated data for the event.
-     */
-    protected _getEventsDataMap = (name: string): any => {
-        return this._eventsDataMap.get(name);
-    }
-
-    /**
-     * Increments the count of times an individual event has been triggered.
-     * @param name - Event name or symbol.
-     */
-    protected _addEventsTimes = (name: string | symbol) => {
-        let times = this._eventCountMap.get(name) ?? 0;
-        times += 1;
-        this._eventCountMap.set(name, times);
-    }
-
-    /**
-     * Retrieves the count of times an individual event has been triggered.
-     * @param name - Event name.
-     * @returns The count of times the event has been triggered.
-     */
-    protected _getEventsTimes = (name: string): number => {
-        return this._eventCountMap.get(name) ?? 0;
-    }
 
     /**
      * Generates a unique token representing the combination of events in the provided list.
@@ -173,48 +63,6 @@ export class TeleportSingleton {
     }
 
 
-    /**
-     * Checks for multi-event conditions and triggers automatic emission if conditions are met.
-     * @protected
-     */
-    protected _checkMultiEvents() {
-        for (let i = 0; i < this._multiEventsList.length; i++) {
-            const eventsList = this._multiEventsList[i] ?? [];
-            // every event that be executed times
-            const timesArr = eventsList.map((eventName) => this._getEventsTimes(eventName));
-            // is that one of the event that executed times not 0
-            const isNotContainsZero = !timesArr.includes(0);
-            const updatedEventName = this._generateMultiEventsToken(eventsList);
-            const lastTrace = this._getEventsUpdateMap(updatedEventName) ?? 0;
-            const currentUpdateTimes = timesArr.reduce((pre, cur) => pre + cur, 0);
-            if (isNotContainsZero) {
-                if (currentUpdateTimes !== lastTrace) this._autoEmit(eventsList);
-                this._add2EventsUpdateMap(updatedEventName, currentUpdateTimes);
-            }
-        }
-    }
-
-    /**
-     * Automatically emits a multi-event with the provided list of events and their associated data.
-     * Creates a combined event with a unique token and triggers emission to subscribers.
-     * 
-     * @param {string[]} eventsList - The list of events to be combined and emitted.
-     */
-    protected _autoEmit(eventsList: string[]) {
-        const multiEventsName = this._generateMultiEventsToken(eventsList);
-        const dataList = eventsList.map(eventName => this._getEventsDataMap(eventName));
-        const emitData: EmitDataType<any[]> = { data: dataList }
-        const subject = this._eventMap.get(multiEventsName);
-        if (!subject) {
-            const _subject = new Subject<any>();
-            this._eventMap.set(multiEventsName, _subject);
-            return this._add2TaskQueue(multiEventsName, (_name: string | symbol) => {
-                const ptr = this._eventMap.get(_name);
-                ptr?.next(emitData);
-            })
-        }
-        subject.next(emitData);
-    }
 
 
     /**
@@ -249,8 +97,6 @@ export class TeleportSingleton {
             callback: callback,
         };
 
-        this._add2EventsDataMap(name, data);
-
         const subject = this._eventMap.get(name);
         if (!subject) {
             const _subject = new Subject<EmitDataType<T>>();
@@ -272,24 +118,10 @@ export class TeleportSingleton {
      * After emit data then execute.
      * @param name event name
      */
-    private _afterEmit(name: string | symbol) {
-        this._addEventsTimes(name);
-        this._checkMultiEvents();
+    private _afterEmit(_: string | symbol) {
+        // TODO:
     }
 
-
-    /**
-     * handler‘s wrapper
-     * @param handler 
-     * @param mode 0 => single, 1=> multiple  
-     */
-    private _eventHandler = (handler: (...data: any[]) => void, mode:0|1) => {
-        return (emitData: EmitDataType<any>) => {
-            if(mode === 0) handler(emitData.data);
-            if(mode === 1) handler(...emitData.data);
-            emitData.callback && emitData.callback();
-        }
-    }
 
 
     /**
@@ -299,14 +131,14 @@ export class TeleportSingleton {
      * @returns The TeleportSingleton instance for chaining.
      */
     public receive(name: string | symbol, handler: (data: any) => void): { clear: () => void } {
-        const subject = this._eventMap.get(name);
-        if (!subject) {
-            const ptr = new Subject<any>();
-            this._eventMap.set(name, ptr);
-            return ptr.subscribe({ next: this._eventHandler(handler, 0) });
-        }
-
-        const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 0) });
+        const subject = this._eventMap.get(name) ?? new Subject<any>();;
+        this._eventMap.set(name, subject);
+        const clearHandler = subject.subscribe({ 
+            next: (emitData: EmitDataType<any>) => {
+                handler(emitData.data);
+                emitData.callback && emitData.callback();
+            }
+        });
         this._fireTaskQueue(name);
         return clearHandler;
     }
@@ -320,34 +152,33 @@ export class TeleportSingleton {
      * @returns The TeleportSingleton instance for chaining.
      */
     public multiReceive(nameList: string[], handler: (...data: any[]) => void): { clear: () => void } {
-        this._multiEventsList.push(nameList);
+        // event's name
+        const eventsNameList = this._generateMultiEventsToken(nameList);
 
+        // get or create a instance
+        const groupSubject = this._groupEventMap.get(eventsNameList) ?? new GroupSubject();
+        groupSubject.setEventsOrder(nameList);
+        this._groupEventMap.set(eventsNameList, groupSubject);
+        
+        // clear group subscribe
+        const groupSubscribeHandler = groupSubject.subscribe(handler);
+
+        // clear child subscribe
         const clearChildrenHandlers = nameList.map((eventName) => {
-            // TODO: 收集receive到的数据，储存到一个map里面，如果clear，就同时也clear掉里面的数据。
-            return this.receive(eventName, () => { });
+            // 收集receive到的数据，储存到一个map里面，如果reset，就同时也reset掉里面的数据。
+            return this.receive(eventName, (value) => { 
+                groupSubject.setState(eventName, value);
+            });
         });
 
-        // clear child handlers and father handler
-        const clearAll = (names:string[], clearHandler:{clear: () => void}) => {
-            return { clear: () => {
-                this._removeMultiEvent(names);
-                clearHandler.clear();
+
+        // clear
+        return { 
+            clear: () => {
+                groupSubscribeHandler.clear();
                 clearChildrenHandlers.forEach((childHandler) => { childHandler.clear() });
-            }}
+            }
         }
-
-        const eventsNameList = this._generateMultiEventsToken(nameList);
-        const subject = this._eventMap.get(eventsNameList);
-        if (!subject) {
-            const ptr = new Subject<any>();
-            this._eventMap.set(eventsNameList, ptr);
-            const clearHandler = ptr.subscribe({ next: this._eventHandler(handler, 1) });
-            return clearAll(nameList, clearHandler);
-        }
-
-        const clearHandler = subject.subscribe({ next: this._eventHandler(handler, 1) });
-        this._fireTaskQueue(eventsNameList);
-        return clearAll(nameList, clearHandler);
     }
 
     /**
@@ -361,14 +192,19 @@ export class TeleportSingleton {
         this._eventMap.delete(name);
     }
 
+
     /**
      * Remove one of the multi handle
      * @param nameList 
      */
     public removeMultiHandle(nameList:string[]){
-        this._removeMultiEvent(nameList);
         const token = this._generateMultiEventsToken(nameList);
-        this.removeHandle(token);
+        // clear children event
+        nameList.forEach((evtName) => {
+            this.removeHandle(evtName);
+        });
+        const subject = this._groupEventMap.get(token);
+        subject?.clear();
     }
 
 
@@ -379,8 +215,12 @@ export class TeleportSingleton {
         for (const name of this._eventMap.keys()) {
             this.removeHandle(name);
         }
+        for (const token of this._groupEventMap.keys()) {
+            this._groupEventMap.get(token)?.clear();
+        }        
         this._eventMap.clear();
     }
+
 
     /**
      * Method to clear both wait queues and event handlers.
@@ -388,9 +228,5 @@ export class TeleportSingleton {
     public clear(): void {
         this._taskQueue.clear();
         this.removeAllHandlers();
-        this._clearEventCountMap();
-        this._clearMultiEventsList();
-        this._clearEventsUpdateMap();
-        this._clearEventsDataMap();
     }
 }
